@@ -1,0 +1,30 @@
+##
+## Build
+##
+
+FROM golang:1.18 as build
+
+# set destination for COPY
+WORKDIR /app
+
+# Download Go modules
+COPY go.mod .
+RUN go mod download
+
+# Copy the source code.
+COPY *.go ./
+
+#Build
+RUN go build -o  /desafiogo
+
+##
+## Deploy
+##
+FROM scratch
+
+WORKDIR /
+
+COPY --from=build /desafiogo /desafiogo
+
+#Run
+ENTRYPOINT [ "/desafiogo" ]
